@@ -136,6 +136,11 @@ namespace Assimp
         public Dictionary<string, PropertyConfig> PropertyConfigurations => m_configs;
 
         /// <summary>
+        /// Gets or sets whether post-processing should still run for 3MF imports even when the native scene looks unsafe.
+        /// </summary>
+        public bool ForcePostProcessForThreeMF { get; set; }
+
+        /// <summary>
         /// Constructs a new instance of the <see cref="AssimpContext"/> class.
         /// </summary>
         public AssimpContext()
@@ -244,6 +249,8 @@ namespace Assimp
 
             IntPtr ptr = IntPtr.Zero;
             IntPtr fileIO = IntPtr.Zero;
+            bool isThreeMFFile = string.Equals(Path.GetExtension(file), ".3mf", StringComparison.OrdinalIgnoreCase);
+            PostProcessSteps effectivePostProcessFlags = postProcessFlags;
 
             //Only do file checks if not using a custom IOSystem
             if(UsingCustomIOSystem)
@@ -266,9 +273,30 @@ namespace Assimp
 
                 TransformScene(ptr);
 
-                ptr = ApplyPostProcessing(ptr, postProcessFlags);
+                if(isThreeMFFile &&
+                    !ForcePostProcessForThreeMF &&
+                    ThreeMFRecovery.ShouldSkipPostProcessing(ptr, effectivePostProcessFlags, out string postProcessMessage))
+                {
+                    LogToAttachedStreams(postProcessMessage);
+                    effectivePostProcessFlags = PostProcessSteps.None;
+                }
 
-                return Scene.FromUnmanagedScene(ptr);
+                ptr = ApplyPostProcessing(ptr, effectivePostProcessFlags);
+
+                Scene scene = Scene.FromUnmanagedScene(ptr);
+                if(isThreeMFFile)
+                {
+                    if(ThreeMFRecovery.TryRecoverScene(ptr, scene, out string recoveryMessage))
+                    {
+                        LogToAttachedStreams(recoveryMessage);
+                    }
+                    else if(!string.IsNullOrEmpty(recoveryMessage))
+                    {
+                        LogToAttachedStreams(recoveryMessage);
+                    }
+                }
+
+                return scene;
             }
             finally
             {
@@ -1119,6 +1147,18 @@ namespace Assimp
             }
 
             return false;
+        }
+
+        private static void LogToAttachedStreams(string message)
+        {
+            if(string.IsNullOrEmpty(message))
+                return;
+
+            IEnumerable<LogStream> loggers = LogStream.GetAttachedLogStreams();
+            foreach(LogStream logger in loggers)
+            {
+                logger.Log(message);
+            }
         }
 
         #endregion
