@@ -48,7 +48,59 @@ All contributions are welcome! Simply raise an issue or open a pull request with
 
 ## Unity Users ##
 
-There existed support for a Unity plugin, however, it is currently in a non-functional state. Pull requests to restore this support would be welcomed!
+AssimpNetter ships a **Unity 6.0+ UPM package** located in `UnityPlugin/UPM/`.
+
+### Installation — Git URL (recommended)
+
+1. Open **Window → Package Manager**.
+2. Click **+** → **Add package from git URL…**
+3. Enter:
+   ```
+   https://github.com/AB-Codeworks/AssimpNetterU.git#path:UnityPlugin/UPM
+   ```
+
+### Installation — .unitypackage
+
+Download `AssimpNetter.unitypackage` from the [Releases](https://github.com/AB-Codeworks/AssimpNetterU/releases) page and import it via **Assets → Import Package → Custom Package…**
+
+### Supported Platforms
+
+| Platform | x64 | x86 | ARM64 |
+|----------|-----|-----|-------|
+| Windows Editor / Player | ✓ | ✓ (player only) | ✓ |
+| Linux Editor / Player | ✓ | — | ✓ |
+| macOS Editor / Player | ✓ | — | ✓ |
+
+### Usage
+
+```csharp
+using Assimp;
+
+void Start()
+{
+    if (!AssimpUnity.IsAssimpAvailable)
+    {
+        Debug.LogError("Assimp failed to load on this platform.");
+        return;
+    }
+    using var ctx = new AssimpContext();
+    Scene scene = ctx.ImportFile(path, PostProcessSteps.Triangulate);
+}
+```
+
+### Refreshing the pre-built binaries
+
+After building AssimpNetter from source, run the following to update the UPM package's managed DLL:
+
+```
+dotnet build AssimpNet -f netstandard2.1 -c Release
+```
+
+The MSBuild targets in `UnityPlugin/UnityPlugin.targets` will automatically refresh all binaries in `UnityPlugin/UPM/`. To regenerate the `.unitypackage` artifact:
+
+```
+python3 tools/create_unitypackage.py
+```
 
 ## Licensing ##
 

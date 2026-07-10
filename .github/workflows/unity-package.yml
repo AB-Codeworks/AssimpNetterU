@@ -1,0 +1,57 @@
+name: Unity Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-unity-package:
+    name: Build Unity Package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed for softprops/action-gh-release to upload release assets
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x.x
+
+      # Build the managed DLL targeting netstandard2.1 (Unity compatible).
+      - name: Build AssimpNetter.dll (netstandard2.1)
+        run: dotnet build AssimpNet/AssimpNet.csproj -f netstandard2.1 -c Release --nologo
+
+      # Refresh the pre-built DLL committed to the UPM package tree.
+      - name: Update UPM managed DLL
+        run: cp AssimpNet/bin/Release/netstandard2.1/AssimpNetter.dll UnityPlugin/UPM/Runtime/AssimpNetter.dll
+
+      # Create the .unitypackage archive.
+      - name: Build .unitypackage
+        run: python3 tools/create_unitypackage.py --output AssimpNetter.unitypackage
+
+      # Upload both the UPM folder (as a zip) and the .unitypackage as release assets.
+      - name: Create UPM zip
+        run: zip -r AssimpNetter-UPM.zip UnityPlugin/UPM/
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            AssimpNetter.unitypackage
+            AssimpNetter-UPM.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload as artifact (non-tag runs)
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-packages
+          path: |
+            AssimpNetter.unitypackage
+            AssimpNetter-UPM.zip
+          retention-days: 7
