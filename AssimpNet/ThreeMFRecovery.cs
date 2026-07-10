@@ -28,13 +28,13 @@ namespace Assimp
 
             if(sceneInfo.MeshCount == 0)
             {
-                message = "Warning, 3MF recovery skipped post-processing because the imported scene contains no native meshes.";
+                message = "Warning: 3MF recovery skipped post-processing because the imported scene contains no native meshes.";
                 return true;
             }
 
             if(sceneInfo.OrphanedMeshIndices.Count > 0)
             {
-                message = $"Warning, 3MF recovery skipped post-processing because {sceneInfo.OrphanedMeshIndices.Count} mesh(es) are not attached to any node.";
+                message = $"Warning: 3MF recovery skipped post-processing because {sceneInfo.OrphanedMeshIndices.Count} mesh(es) are not attached to any node.";
                 return true;
             }
 
@@ -59,13 +59,13 @@ namespace Assimp
 
             if(sceneInfo.MeshCount == 0)
             {
-                message = "Warning, 3MF recovery could not find any native meshes to recover.";
+                message = "Warning: 3MF recovery could not find any native meshes to recover.";
                 return false;
             }
 
             if(scene.MeshCount == 0)
             {
-                message = "Warning, 3MF recovery found native mesh slots, but no managed meshes were produced.";
+                message = "Warning: 3MF recovery found native mesh slots, but no managed meshes were produced.";
                 return false;
             }
 
@@ -79,11 +79,11 @@ namespace Assimp
             int recoveredMeshCount = AttachOrphanedMeshes(scene, orphanedMeshIndices);
             if(recoveredMeshCount == 0)
             {
-                message = $"Warning, 3MF recovery found {orphanedMeshIndices.Count} orphaned mesh(es), but could not attach them to the node hierarchy.";
+                message = $"Warning: 3MF recovery found {orphanedMeshIndices.Count} orphaned mesh(es), but could not attach them to the node hierarchy.";
                 return false;
             }
 
-            message = $"Info, 3MF recovery attached {recoveredMeshCount} orphaned mesh(es) to the node hierarchy.";
+            message = $"Info: 3MF recovery attached {recoveredMeshCount} orphaned mesh(es) to the node hierarchy.";
             return true;
         }
 
@@ -108,7 +108,7 @@ namespace Assimp
                 return orphanedMeshIndices.Count;
             }
 
-            Node recoveryNode = new Node("Recovered3MFMeshes");
+            Node recoveryNode = new Node("RecoveredMeshes_3MF");
             recoveryNode.MeshIndices.AddRange(orphanedMeshIndices);
             scene.RootNode.Children.Add(recoveryNode);
             return orphanedMeshIndices.Count;

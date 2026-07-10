@@ -284,14 +284,16 @@ namespace Assimp
                 ptr = ApplyPostProcessing(ptr, effectivePostProcessFlags);
 
                 Scene scene = Scene.FromUnmanagedScene(ptr);
-                string recoveryMessage = null;
-                if(isThreeMFFile && ThreeMFRecovery.TryRecoverScene(ptr, scene, out recoveryMessage))
+                if(isThreeMFFile)
                 {
-                    LogToAttachedStreams(recoveryMessage);
-                }
-                else if(isThreeMFFile && !string.IsNullOrEmpty(recoveryMessage))
-                {
-                    LogToAttachedStreams(recoveryMessage);
+                    if(ThreeMFRecovery.TryRecoverScene(ptr, scene, out string recoveryMessage))
+                    {
+                        LogToAttachedStreams(recoveryMessage);
+                    }
+                    else if(!string.IsNullOrEmpty(recoveryMessage))
+                    {
+                        LogToAttachedStreams(recoveryMessage);
+                    }
                 }
 
                 return scene;

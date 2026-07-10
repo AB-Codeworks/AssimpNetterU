@@ -82,7 +82,7 @@ namespace Assimp.Test
                 Assert.That(recovered, Is.True);
                 Assert.That(message, Does.Contain("attached 3 orphaned mesh"));
                 Assert.That(scene.RootNode.ChildCount, Is.EqualTo(3));
-                Assert.That(scene.RootNode.Children[2].Name, Is.EqualTo("Recovered3MFMeshes"));
+                Assert.That(scene.RootNode.Children[2].Name, Is.EqualTo("RecoveredMeshes_3MF"));
                 Assert.That(scene.RootNode.Children[2].MeshIndices, Is.EqualTo(new [] { 0, 1, 2 }));
             }
             finally
