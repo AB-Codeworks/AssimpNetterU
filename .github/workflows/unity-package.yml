@@ -10,6 +10,8 @@ jobs:
   build-unity-package:
     name: Build Unity Package
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed for softprops/action-gh-release to upload release assets
 
     steps:
       - uses: actions/checkout@v4
