@@ -1,0 +1,17 @@
+{
+  "name": "com.assimpnetter.runtime",
+  "version": "6.0.5",
+  "displayName": "AssimpNetter",
+  "description": "A .NET wrapper for the Open Asset Import (Assimp) library. Supports importing dozens of 3D model formats (OBJ, FBX, GLTF, Collada, and more). Includes pre-built native binaries for Windows, Linux, and macOS (x64 and ARM64).",
+  "unity": "6000.0",
+  "unityRelease": "0f1",
+  "documentationUrl": "https://github.com/AB-Codeworks/AssimpNetterU",
+  "changelogUrl": "https://github.com/AB-Codeworks/AssimpNetterU/blob/main/ChangeLog.txt",
+  "licensesUrl": "https://github.com/AB-Codeworks/AssimpNetterU/blob/main/License.txt",
+  "keywords": ["assimp", "3d", "model", "importer", "fbx", "gltf", "obj", "collada"],
+  "author": {
+    "name": "Nicholas Woodfield, Salvage, AB-Codeworks",
+    "url": "https://github.com/AB-Codeworks/AssimpNetterU"
+  },
+  "type": "library"
+}

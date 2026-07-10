@@ -47,6 +47,9 @@ artifacts/
 *_i.h
 *.ilk
 *.meta
+# Allow Unity .meta files inside the UPM package tree
+!UnityPlugin/UPM/**/*.meta
+!UnityPlugin/Plugins/**/*.meta
 *.obj
 *.pch
 *.pdb
