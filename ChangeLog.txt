@@ -2,6 +2,16 @@
 CHANGELOG
 ----------------------------------------------------------------------
 
+6.0.5.0 (18/07/2026)
+
+  - Update to Assimp native 6.0.5
+  - Improved robustness for invalid mesh data and buffer overflow protection
+  - Includes PR #5338: Check if index for mesh access is out of range
+  - Includes PR #5306: Checks for invalid indices
+  - Includes PR #5318: Fixed empty mesh handling
+  - Enhanced safety checks for array bounds in various loaders
+  - NOTE: "BLEND: Number of vertices is larger than the corresponding array" errors indicate corrupted Blender files; repair in Blender or export to FBX/OBJ format
+
 5.4.3.0 (26/11/2024)
 
   - Update to Assimp native 5.4.3
